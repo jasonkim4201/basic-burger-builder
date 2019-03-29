@@ -8,7 +8,7 @@ const Layout = (props) => {
   return (
     // wrap everyting around a higher order component
     <Auxiliary>
-      <div>Toolbarm, sidedrawer, backdrop</div>
+      <div>Toolbar, sidedrawer, backdrop</div>
       <main className={classes.Content}>
         {props.children}
       </main>
