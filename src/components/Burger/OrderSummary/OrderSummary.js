@@ -1,5 +1,6 @@
 import React from "react";
 import Auxiliary from "../../../hoc/Auxiliary";
+import Button from "../../UI/Button/Button";
 
 const OrderSummary = (props) => {
   const ingredientSummary = Object.keys(props.ingredients).map(ingredientKey => {
@@ -20,7 +21,10 @@ const OrderSummary = (props) => {
         {/* create list items dynamically */}
         {ingredientSummary}
       </ul>
+      <p><strong>Total: ${props.total.toFixed(2)}</strong></p> {/* remember to add toFixed to keep it at 2 decimals */}
       <p>Proceed to checkout?</p>
+      <Button btnType="Success" clicked={props.purchaseContinued}>CONTINUE</Button>
+      <Button btnType="Danger" clicked={props.purchaseCancelled}>CANCEL</Button>
     </Auxiliary>
   )
 }
