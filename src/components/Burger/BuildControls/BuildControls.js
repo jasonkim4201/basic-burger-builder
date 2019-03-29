@@ -11,11 +11,14 @@ const controls = [
 
 const BuildControls = (props) => (
   <div className={classes.BuildControls}>
+    <p>Current Price: <strong>${props.price.toFixed(2)}</strong></p>
     {controls.map(control => (
       <BuildContol 
         key={control.label} 
         label={control.label}
-        added={() => props.ingredientAdded(control.type)}  
+        added={() => props.ingredientAdded(control.type)} 
+        removed={() => props.ingredientRemoved(control.type)}
+        disabled={props.disabled[control.type]} /* access the disabled info for a given control type */
       />
     ))}
   </div>

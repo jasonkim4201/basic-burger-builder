@@ -25,7 +25,7 @@ class BurgerBuilder extends Component {
   // add handlers to add and remove ingredients
   addIngredientHandler = (type) => {
     const oldCount = this.state.ingredients[type];
-    const  updatedCount = oldCount + 1;
+    const updatedCount = oldCount + 1;
 
     // create variable for updated ingredients use spread operator to distribute props of old ingredients state into the new object
     const updatedIngredients = {
@@ -40,16 +40,40 @@ class BurgerBuilder extends Component {
   }
 
   removeIngredientHandler = (type) => {
+    const oldCount = this.state.ingredients[type];
+    
+    if (oldCount <= 0) {
+      return false;
+    }
 
+    const updatedCount = oldCount - 1;
+    const updatedIngredients = {
+      ...this.state.ingredients
+    };
+    updatedIngredients[type] = updatedCount;
+    const priceDeduction = INGREDIENT_PRICES[type];
+    const oldPrice = this.state.totalPrice;
+    const newPrice = oldPrice - priceDeduction;
+    this.setState({ totalPrice: newPrice, ingredients: updatedIngredients});
   }
 
   render() {
+    const disabledInfo = {
+      ...this.state.ingredients
+    };
+    // loop through all the keys in disabledInfo and check to see are 0 or less
+    for (let key in disabledInfo) {
+      disabledInfo[key] = disabledInfo[key] <= 0
+    }
+
     return (
       <Auxiliary>
         <Burger  ingredients={this.state.ingredients}/>
         <BuildControls
           ingredientAdded={this.addIngredientHandler}
-          ingredientRemoved={"add remove handler function l8r"}  
+          ingredientRemoved={this.removeIngredientHandler} 
+          disabled={disabledInfo}
+          price={this.state.totalPrice} 
         />
       </Auxiliary>
     )

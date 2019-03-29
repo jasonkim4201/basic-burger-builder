@@ -2,7 +2,7 @@
   width: 85%;
   margin: auto;
   height: 300px;
-  /* overflow: hidden visible; */ /* commenting scroll out for now. makes it look ugly */
+  overflow: hidden visible; /* commenting scroll out for now. makes it look ugly */
   text-align: center;
   font-weight: bold;
   font-size: 1.2rem; /* scales based on font size */
