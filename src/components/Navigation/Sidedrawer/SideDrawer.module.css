@@ -16,12 +16,12 @@
   .SideDrawer {
     display: none;
   }
+}
 
-  .Open {
+.Open {
     transform: translateX(0); /* this will shift sidedrawer into position listed above */
   }
 
-  .Close {
+.Close {
     transform: translateX(-100%); /* this will shift it to left */
   }
-}
