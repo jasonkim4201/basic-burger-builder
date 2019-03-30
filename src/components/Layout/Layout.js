@@ -10,7 +10,7 @@ const Layout = (props) => {
     // wrap everyting around a higher order component
     <Auxiliary>
       <Toolbar />
-      <div>Toolbar, sidedrawer</div>
+      
       <main className={classes.Content}>
         {props.children}
       </main>
