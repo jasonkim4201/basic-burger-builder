@@ -4,7 +4,8 @@ import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-
+import axios from "../../axios-orders";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 const INGREDIENT_PRICES = {
   lettuce: 0.25,
@@ -24,7 +25,8 @@ class BurgerBuilder extends Component {
     },
     totalPrice: 5, //yea ur gonna pay a premium on this burger
     purchaseable: false, //switches to true once there's at least one other ingredient on the burger
-    purchasing: false //set to true once proceed to checkout button clicked
+    purchasing: false, //set to true once proceed to checkout button clicked
+    isLoading: false
   }
 
   updatePurchaseState = (ingredients) => {
@@ -93,7 +95,31 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinueHandler = () => {
-    alert("BUY THE BURGER NOW");
+    // alert("BUY THE BURGER NOW"); Hey uhhh be sure to send my burger info to the server
+    this.setState({ isLoading: true });
+    const orderInfo = {
+      ingredients: this.state.ingredients,
+      price: this.state.totalPrice, /* pls no hack and my client-side price calc */
+      customer: {
+        name: "Jason Kim",
+        address: {
+          street: "123 Burger Ln",
+          zipCode: "12345",
+          country: "USA"
+        },
+        email: "iLikeBurgers@burgerMail.com",  
+      },
+      deliveryMethod: "express" /* standard, express, prime */
+
+    } 
+    axios.post("/orders.json", orderInfo)
+        .then(response => {
+          this.setState({ isLoading: false, purchasing: false });
+        })
+        .catch(error => {
+          this.setState({ isLoading: false, purchasing: false });
+          console.log(error);
+        });
   }
 
   render() {
@@ -104,16 +130,25 @@ class BurgerBuilder extends Component {
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0
     }
+    
+    let orderSummary = <OrderSummary 
+                          ingredients={this.state.ingredients}
+                          purchaseCancelled={this.purchasedCancelHandler}
+                          purchaseContinued={this.purchaseContinueHandler}
+                          total={this.state.totalPrice} />;
+
+    // make a check for loading method. if true display loading. once loading is no longer a thing set it back to false
+    if (this.state.isLoading) {
+      orderSummary = <Spinner />;
+    }
 
     return (
       <Auxiliary>
-        <Modal show={this.state.purchasing} modalClosed={this.purchasedCancelHandler}> {/* bind modal to purchasing state to only show if true */}
-          <OrderSummary 
-            ingredients={this.state.ingredients}
-            purchaseCancelled={this.purchasedCancelHandler}
-            purchaseContinued={this.purchaseContinueHandler}
-            total={this.state.totalPrice}
-            />
+        <Modal 
+          show={this.state.purchasing} 
+          modalClosed={this.purchasedCancelHandler} /* bind modal to purchasing state to only show if true  */
+        >
+          {orderSummary}
         </Modal>
         <Burger  ingredients={this.state.ingredients}/>
         <BuildControls

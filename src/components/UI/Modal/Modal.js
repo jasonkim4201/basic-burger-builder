@@ -5,9 +5,9 @@ import Backdrop from "../Backdrop/Backdrop";
 
 
 class Modal extends Component {
-  
+  // props children needs to be checked because of child components for loader to work
   shouldComponentUpdate(nextProps, nextState) {
-    return nextProps.show !== this.props.show
+    return nextProps.show !== this.props.show || nextProps.children !== this.props.children;
   }
 
   /* componentDidUpdate() {
