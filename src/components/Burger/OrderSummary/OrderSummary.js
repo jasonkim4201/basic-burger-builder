@@ -1,10 +1,10 @@
 import React from "react";
-import Auxiliary from "../../../hoc/Auxiliary";
+import Auxiliary from "../../../hoc/Auxiliary/Auxiliary";
 import Button from "../../UI/Button/Button";
 
 const OrderSummary = (props) => {
   const ingredientSummary = Object.keys(props.ingredients).map(ingredientKey => {
-    console.log(`ingredient key: ${ingredientKey}`);
+    /* console.log(`ingredient key: ${ingredientKey}`); */
     return (
       <li key={ingredientKey}>
         <span style={{ textTransform: "capitalize" }}>{ingredientKey}</span>: {props.ingredients[ingredientKey]}
