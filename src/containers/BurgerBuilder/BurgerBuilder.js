@@ -6,6 +6,9 @@ import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import sadBurger from "../../assets/images/kissclipart-cartoon-clipart-cheeseburger-veggie-burger-junk-fo-58c1153b58284680.png"
+import classes from "./BurgerBuilder.module.css";
 
 const INGREDIENT_PRICES = {
   lettuce: 0.25,
@@ -16,17 +19,22 @@ const INGREDIENT_PRICES = {
 
 class BurgerBuilder extends Component {
   state = {
-    ingredients: {
-        bacon: 0,
-        lettuce: 0,
-        cheese: 0,
-        meat: 0,
-        
-    },
+    ingredients: null,
     totalPrice: 5, //yea ur gonna pay a premium on this burger
     purchaseable: false, //switches to true once there's at least one other ingredient on the burger
     purchasing: false, //set to true once proceed to checkout button clicked
-    isLoading: false
+    isLoading: false,
+    error: false
+  }
+
+  componentDidMount() {
+    axios.get("https://basic-burger-builder.firebaseio.com/ingredients.json")
+        .then(response => {
+          this.setState({ ingredients : response.data });
+        })
+        .catch(error => {
+          this.setState({ error: true });
+        }); 
   }
 
   updatePurchaseState = (ingredients) => {
@@ -131,13 +139,41 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0
     }
     
-    let orderSummary = <OrderSummary 
+    let orderSummary = null;
+
+    let errorMessage = (
+      <div className={classes.CustomError}>
+        <img src={sadBurger} alt="Burger error"/>
+        <p>Oh no! Something went horribly wrong!</p>
+      </div>
+    );
+
+    let burger = this.state.error ? errorMessage : <Spinner />;
+    
+    if (this.state.ingredients) {
+      burger = (
+        <Auxiliary>
+            <Burger  ingredients={this.state.ingredients}/>
+                <BuildControls
+                    ingredientAdded={this.addIngredientHandler}
+                    ingredientRemoved={this.removeIngredientHandler} 
+                    disabled={disabledInfo}
+                    purchaseable={this.state.purchaseable}
+                    price={this.state.totalPrice} 
+                    ordered={this.purchaseHandler}
+                  />
+          </Auxiliary>
+      );
+
+      orderSummary = <OrderSummary 
                           ingredients={this.state.ingredients}
                           purchaseCancelled={this.purchasedCancelHandler}
                           purchaseContinued={this.purchaseContinueHandler}
-                          total={this.state.totalPrice} />;
+                          total={this.state.totalPrice} 
+                      />;
 
-    // make a check for loading method. if true display loading. once loading is no longer a thing set it back to false
+    }
+    // make a check for loading method. if true display loading. 
     if (this.state.isLoading) {
       orderSummary = <Spinner />;
     }
@@ -150,18 +186,11 @@ class BurgerBuilder extends Component {
         >
           {orderSummary}
         </Modal>
-        <Burger  ingredients={this.state.ingredients}/>
-        <BuildControls
-          ingredientAdded={this.addIngredientHandler}
-          ingredientRemoved={this.removeIngredientHandler} 
-          disabled={disabledInfo}
-          purchaseable={this.state.purchaseable}
-          price={this.state.totalPrice} 
-          ordered={this.purchaseHandler}
-        />
+        {burger}
       </Auxiliary>
     )
   }
 }
 
-export default BurgerBuilder; 
+/* use withErrorHandler and wrap burger builder  also pass on axios instance*/
+export default withErrorHandler(BurgerBuilder, axios); 
