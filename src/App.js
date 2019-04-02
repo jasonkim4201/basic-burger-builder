@@ -4,6 +4,7 @@ import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import Checkout from './containers/Checkout/Checkout';
 import { Route, Switch } from "react-router-dom"; 
 import CustomError from './components/CustomError/CustomError';
+import Orders from './containers/Orders/Orders';
 
 
 class App extends Component {
@@ -12,8 +13,9 @@ class App extends Component {
       <div>
        <Layout>
          <Switch>
-          <Route exact path="/" component={BurgerBuilder}/>
           <Route path="/checkout" component={Checkout} />
+          <Route path="/orders" component={Orders} /> {/* cant believe i left out a '/'  here...*/}
+          <Route exact path="/" component={BurgerBuilder}/>
           <Route render ={() => <CustomError message="Page not found!" />} />
          </Switch>
        </Layout>

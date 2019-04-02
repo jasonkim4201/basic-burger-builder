@@ -5,24 +5,25 @@ import ContactData from "./ContactData/ContactData";
 
 class Checkout extends Component {
   state = {
-    // temp dummy data
-    ingredients: {
-      lettuce: 1,
-      cheese: 1,
-      bacon: 1,
-      meat: 3
-    }
+    ingredients: null,
+    price: 0
   }
 
-  componentDidMount = () => {
+  componentWillMount = () => {
       const query = new URLSearchParams(this.props.location.search);
       const ingredients = {};
+      let price = 0;
       for (let param of query.entries()) {
         // each entry will be like ["bacon", "1"]
         // set it into an object format left side represents keys right side is value
-        ingredients[param[0]] = +param[1];
-      }
-      this.setState({ingredients: ingredients});
+        if (param[0] === "price") {
+          price = param[1];
+        } else {
+          ingredients[param[0]] = +param[1];
+        }
+        
+      } 
+      this.setState({ingredients: ingredients, totalPrice: price});
   }
 
   checkoutContinuedHandler = () => {
@@ -43,7 +44,10 @@ class Checkout extends Component {
             checkoutCancelled={this.checkoutCancelledHandler}
         
         />
-        <Route exact path={`${this.props.match.path}/contact-data`} component={ContactData}/> {/* exact path will it cause issues? */}
+        <Route 
+          exact path={`${this.props.match.path}/contact-data`} 
+          render={(props) => (<ContactData ingredients={this.state.ingredients} price={this.state.totalPrice} {...props}/>)}
+        /> 
       </div>
     )
   }

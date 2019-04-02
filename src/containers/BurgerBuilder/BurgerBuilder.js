@@ -104,35 +104,15 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinueHandler = () => {
-    /* this.setState({ isLoading: true });
-    const orderInfo = {
-      ingredients: this.state.ingredients,
-      price: this.state.totalPrice,
-      customer: {
-        name: "Jason Kim",
-        address: {
-          street: "123 Burger Ln",
-          zipCode: "12345",
-          country: "USA"
-        },
-        email: "iLikeBurgers@burgerMail.com",  
-      },
-      deliveryMethod: "express" // standard, express, prime 
-
-    } 
-    axios.post("/orders.json", orderInfo)
-        .then(response => {
-          this.setState({ isLoading: false, purchasing: false });
-        })
-        .catch(error => {
-          this.setState({ isLoading: false, purchasing: false });
-          console.log(error);
-        }); */
+    
     // .push method essentially allows us to switch pages
     const queryParams = [];
     for (let i in this.state.ingredients) {
         queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]));
     }
+
+    queryParams.push("price=" + this.state.totalPrice);
+    
     const queryString = queryParams.join("&");
 
     this.props.history.push({
