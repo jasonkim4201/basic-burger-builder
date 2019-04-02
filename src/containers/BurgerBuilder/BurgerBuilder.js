@@ -7,8 +7,7 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
-import sadBurger from "../../assets/images/kissclipart-cartoon-clipart-cheeseburger-veggie-burger-junk-fo-58c1153b58284680.png"
-import classes from "./BurgerBuilder.module.css";
+import CustomError from "../../components/CustomError/CustomError";
 
 const INGREDIENT_PRICES = {
   lettuce: 0.25,
@@ -28,6 +27,8 @@ class BurgerBuilder extends Component {
   }
 
   componentDidMount() {
+    console.log(this.props); //shows history location and match. this props from routes only get passed to direct child.
+                            // see burger.js file for workaround to pass into nested components
     axios.get("https://basic-burger-builder.firebaseio.com/ingredients.json")
         .then(response => {
           this.setState({ ingredients : response.data });
@@ -103,11 +104,10 @@ class BurgerBuilder extends Component {
   }
 
   purchaseContinueHandler = () => {
-    // alert("BUY THE BURGER NOW"); Hey uhhh be sure to send my burger info to the server
-    this.setState({ isLoading: true });
+    /* this.setState({ isLoading: true });
     const orderInfo = {
       ingredients: this.state.ingredients,
-      price: this.state.totalPrice, /* pls no hack and my client-side price calc */
+      price: this.state.totalPrice,
       customer: {
         name: "Jason Kim",
         address: {
@@ -117,7 +117,7 @@ class BurgerBuilder extends Component {
         },
         email: "iLikeBurgers@burgerMail.com",  
       },
-      deliveryMethod: "express" /* standard, express, prime */
+      deliveryMethod: "express" // standard, express, prime 
 
     } 
     axios.post("/orders.json", orderInfo)
@@ -127,7 +127,18 @@ class BurgerBuilder extends Component {
         .catch(error => {
           this.setState({ isLoading: false, purchasing: false });
           console.log(error);
-        });
+        }); */
+    // .push method essentially allows us to switch pages
+    const queryParams = [];
+    for (let i in this.state.ingredients) {
+        queryParams.push(encodeURIComponent(i) + "=" + encodeURIComponent(this.state.ingredients[i]));
+    }
+    const queryString = queryParams.join("&");
+
+    this.props.history.push({
+      pathname: "/checkout",
+      search: `?${queryString}`
+    });
   }
 
   render() {
@@ -142,10 +153,7 @@ class BurgerBuilder extends Component {
     let orderSummary = null;
 
     let errorMessage = (
-      <div className={classes.CustomError}>
-        <img src={sadBurger} alt="Burger error"/>
-        <p>Oh no! Something went horribly wrong!</p>
-      </div>
+      <CustomError />
     );
 
     let burger = this.state.error ? errorMessage : <Spinner />;

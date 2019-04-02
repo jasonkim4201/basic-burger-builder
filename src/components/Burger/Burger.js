@@ -1,8 +1,10 @@
 import React from "react";
 import classes from "./Burger.module.css";
 import BurgerIngredients from "./BurgerIngredients/BurgerIngredients";
+import { withRouter } from "react-router-dom" //using a higher order component and wrapping export will show location/history in props
 
 const Burger = (props) => {
+    console.log(props); 
     // Object.keys() extracts keys of a given objectand turns it into an array. so array of keys
     // so bacon, cheese and meat will come out as a string which will help make this all dynamically
     let transformedIngredients = Object.keys(props.ingredients).map(ingredientKey => {     
@@ -29,4 +31,4 @@ return (
   );
 }
 
-export default Burger;
+export default withRouter(Burger);
