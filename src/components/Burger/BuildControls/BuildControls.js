@@ -2,6 +2,7 @@ import React from "react";
 import classes from "./BuildControls.module.css";
 import BuildContol from "./BuildControl/BuildControl";
 
+// can add more stuff here later. order of it affects how its shown on screen to
 const controls = [
     { label: "Bacon", type: "bacon" },
     { label: "Lettuce", type: "lettuce" },
