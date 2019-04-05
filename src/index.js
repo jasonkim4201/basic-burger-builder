@@ -7,10 +7,10 @@ import { createStore } from "redux";
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import reducer from "./store/reducer";
+import burgerBuilderReducer from "./store/reducers/burgerBuilder";
 
 // create store constant to createStore which will take in the reducer
-const store = createStore(reducer);
+const store = createStore(burgerBuilderReducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 // provider should wrap around everything. yes, even the browser router. remember that...
 const app = (

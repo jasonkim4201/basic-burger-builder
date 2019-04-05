@@ -9,7 +9,7 @@ import axios from "../../axios-orders";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import CustomError from "../../components/CustomError/CustomError";
-import * as actionTypes from "../../store/actions";
+import * as burgerBuilderActions from "../../store/actions/";
 
 
 class BurgerBuilder extends Component {
@@ -22,13 +22,13 @@ class BurgerBuilder extends Component {
   componentDidMount() {
     console.log(this.props); //shows history location and match. this props from routes only get passed to direct child.
                             // see burger.js file for workaround to pass into nested components
-    /* axios.get("https://basic-burger-builder.firebaseio.com/ingredients.json")
+    axios.get("https://basic-burger-builder.firebaseio.com/ingredients.json")
         .then(response => {
           this.setState({ ingredients : response.data });
         })
         .catch(error => {
           this.setState({ error: true });
-        });  */
+        }); 
   }
 
   updatePurchaseState = (ingredients) => {
@@ -130,9 +130,9 @@ const mapStateToPops = state => {
 }
 
 const maphDispatchToProps = dispatch => {
-  return {
-    onIngredientAdded: (ingName) => dispatch({type: actionTypes.ADD_INGREDIENT, ingredientName: ingName}),
-    onIngredientRemoved: (ingName) => dispatch({type: actionTypes.REMOVE_INGREDIENT, ingredientName: ingName})
+  return {  
+    onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
+    onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName))
   }
 }
 
