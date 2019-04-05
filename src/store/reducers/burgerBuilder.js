@@ -3,13 +3,9 @@ import * as actionTypes from "../actions/actionTypes";
 // set initial state constant to define state
 
 const initialState = {
-  ingredients: { // this is temporary
-    bacon: 0,
-    lettuce: 0,
-    cheese: 0,
-    meat: 0
-  },
-  totalPrice: 5
+  ingredients: null,
+  totalPrice: 5,
+  error: false 
 };
 
 const INGREDIENT_PRICES = {
@@ -40,7 +36,25 @@ const reducer = (state = initialState, action) => {
           [action.ingredientName]: state.ingredients[action.ingredientName] - 1
         },
         totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
-      }
+      };
+    case actionTypes.SET_INGREDIENTS:
+      return {
+        ...state,
+        // ingredients: action.ingredients, // see burgerbuilder.js in actions folder for refrence to the property
+        ingredients: {
+          bacon: action.ingredients.bacon,
+          lettuce: action.ingredients.lettuce,
+          cheese: action.ingredients.cheese,
+          meat: action.ingredients.meat //this reduces flexibility but will get the lettuce to go on an area i want
+        },
+        error: false
+      };
+    
+    case actionTypes.FETCH_FAILED_INGREDIENTS:
+      return { //set error to true here
+        ...state,
+        error: true
+      };
 
     default:
       return state; // okay react you can finally stop nagging me over not having a default in my switch case.

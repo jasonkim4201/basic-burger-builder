@@ -5,7 +5,7 @@ import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
-import axios from "../../axios-orders";
+import axios from "../../axios-orders"; // hmm
 import Spinner from "../../components/UI/Spinner/Spinner";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import CustomError from "../../components/CustomError/CustomError";
@@ -15,20 +15,12 @@ import * as burgerBuilderActions from "../../store/actions/";
 class BurgerBuilder extends Component {
   state = {
     purchasing: false, //set to true once proceed to checkout button clicked
-    isLoading: false,
-    error: false
   }
 
   componentDidMount() {
     console.log(this.props); //shows history location and match. this props from routes only get passed to direct child.
                             // see burger.js file for workaround to pass into nested components
-    axios.get("https://basic-burger-builder.firebaseio.com/ingredients.json")
-        .then(response => {
-          this.setState({ ingredients : response.data });
-        })
-        .catch(error => {
-          this.setState({ error: true });
-        }); 
+    this.props.onInitIngredients();
   }
 
   updatePurchaseState = (ingredients) => {
@@ -71,11 +63,11 @@ class BurgerBuilder extends Component {
     
     let orderSummary = null;
 
-    let errorMessage = (
+     let errorMessage = (
       <CustomError />
     );
-
-    let burger = this.state.error ? errorMessage : <Spinner />;
+    
+    let burger = this.props.error ? errorMessage : <Spinner />; 
     
     if (this.props.ings) {
       burger = (
@@ -100,11 +92,7 @@ class BurgerBuilder extends Component {
                       />;
 
     }
-    // make a check for loading method. if true display loading. 
-    if (this.state.isLoading) {
-      orderSummary = <Spinner />;
-    }
-
+   
     return (
       <Auxiliary>
         <Modal 
@@ -125,14 +113,16 @@ class BurgerBuilder extends Component {
 const mapStateToPops = state => {
   return {
     ings: state.ingredients,
-    price: state.totalPrice
+    price: state.totalPrice,
+    error: state.error
   }
 }
 
 const maphDispatchToProps = dispatch => {
   return {  
     onIngredientAdded: (ingName) => dispatch(burgerBuilderActions.addIngredient(ingName)),
-    onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName))
+    onIngredientRemoved: (ingName) => dispatch(burgerBuilderActions.removeIngredient(ingName)),
+    onInitIngredients: () => dispatch(burgerBuilderActions.initIngredients())
   }
 }
 
