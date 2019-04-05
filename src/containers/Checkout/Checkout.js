@@ -1,11 +1,12 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import CheckoutSummary from "../../components/Orders/CheckoutSummary/CheckoutSummary";
-import { Route } from "react-router-dom";
+import { Route, Redirect } from "react-router-dom";
 import ContactData from "./ContactData/ContactData";
 import { connect } from "react-redux";
+import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 
 class Checkout extends Component {
-  
+
   checkoutContinuedHandler = () => {
     this.props.history.replace("/checkout/contact-data");
   }
@@ -16,26 +17,30 @@ class Checkout extends Component {
   }
 
   render() {
-    return (
-      <div>
-        <CheckoutSummary
+    let summary = <Redirect to="/" />
+    if (this.props.ings) {
+      summary = (
+        <Auxiliary> {/* div? */}
+          <CheckoutSummary
             ingredients={this.props.ings}
             checkoutContinued={this.checkoutContinuedHandler}
             checkoutCancelled={this.checkoutCancelledHandler}
-        
-        />
-        <Route 
-          exact path={`${this.props.match.path}/contact-data`} 
-          component={ContactData}
-        /> 
-      </div>
-    )
+
+          />
+          <Route
+            exact path={`${this.props.match.path}/contact-data`}
+            component={ContactData}
+          />
+        </Auxiliary>
+      );
+    }
+    return summary;
   }
 }
 
 const mapStateToProps = state => {
   return { //make sure this matches the initialState from reducer!
-    ings: state.ingredients
+    ings: state.burgerBuilder.ingredients
   }
 }
 
