@@ -4,10 +4,10 @@ import * as actionTypes from "./actions";
 
 const initialState = {
   ingredients: { // this is temporary
-    bacon: 0,meat: 0,
+    bacon: 0,
     lettuce: 0,
     cheese: 0,
-    
+    meat: 0
   },
   totalPrice: 5
 };

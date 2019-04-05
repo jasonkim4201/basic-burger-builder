@@ -73,7 +73,8 @@ class ContactData extends Component {
         },
         value: "",
         validation: {
-          required: true
+          required: true,
+          isEmail: true
         },
         valid: false,
         touched: false
@@ -141,11 +142,13 @@ class ContactData extends Component {
       isValid = value.length <= rules.maxLength && isValid;
     }
     if (rules.isNum) {
-      // will be valid if is NOT not a number is true. yeah i know...weird 
-      isValid = !isNaN(value.trim()) === rules.isNum && isValid;
+      const stupidRegexCheck = /^\d+$/; // this is the way to check is stuff is a number
+      isValid = stupidRegexCheck.test(value.trim()) && isValid;
     }
-    // reminder to put in a rule validation with the regex stuff for proper email params too
-    console.log(`reminder to yourself that you should implement a rule to validate email.`)
+    if (rules.isEmail) {
+      const stupidEmailRegexCheck = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/; // the really long string that checks for email validation. i really need to save these somewhere
+      isValid = stupidEmailRegexCheck.test(value.trim()) && isValid;
+    }
     return isValid;
 
   }
