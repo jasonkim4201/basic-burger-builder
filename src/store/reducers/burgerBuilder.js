@@ -47,7 +47,8 @@ const reducer = (state = initialState, action) => {
           cheese: action.ingredients.cheese,
           meat: action.ingredients.meat //this reduces flexibility but will get the lettuce to go on an area i want
         },
-        error: false
+        error: false,
+        totalPrice: 5
       };
     
     case actionTypes.FETCH_FAILED_INGREDIENTS:

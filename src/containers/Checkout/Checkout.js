@@ -5,8 +5,9 @@ import ContactData from "./ContactData/ContactData";
 import { connect } from "react-redux";
 import Auxiliary from "../../hoc/Auxiliary/Auxiliary";
 
-class Checkout extends Component {
 
+class Checkout extends Component {
+  
   checkoutContinuedHandler = () => {
     this.props.history.replace("/checkout/contact-data");
   }
@@ -18,9 +19,12 @@ class Checkout extends Component {
 
   render() {
     let summary = <Redirect to="/" />
+    
     if (this.props.ings) {
+      const purchasedRedirect = this.props.purchased && <Redirect to="/" />
       summary = (
         <Auxiliary> {/* div? */}
+          {purchasedRedirect}
           <CheckoutSummary
             ingredients={this.props.ings}
             checkoutContinued={this.checkoutContinuedHandler}
@@ -40,8 +44,11 @@ class Checkout extends Component {
 
 const mapStateToProps = state => {
   return { //make sure this matches the initialState from reducer!
-    ings: state.burgerBuilder.ingredients
-  }
+    ings: state.burgerBuilder.ingredients,
+    purchased: state.order.purchased
+  };
 }
+
+
 
 export default connect(mapStateToProps)(Checkout);

@@ -1,52 +1,52 @@
 import React, {Component} from "react";
+import { connect } from "react-redux";
 import Order from "../../components/Orders/Order";
 import axios from "../../axios-orders";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
+import * as actions from "../../store/actions/";
+import Spinner from "../../components/UI/Spinner/Spinner";
+
 
 class Orders extends Component {
-  // state should have loading and orders
-  state = {
-    loading: true,
-    orders: [],
-    error: false
-  }
-  // fetch orders from firebase with componentDidMount and axios
-  // get listed orders from orders.json
+ 
   componentDidMount() {
-    axios.get("/orders.json")
-        .then(response => {
-          console.log(response);
-          // use for in loop to turn the response.data object into an array
-          const fetchedOrders = [];
-          for (let key in response.data) {
-              console.log(key); // unique id from firebase
-              fetchedOrders.push({ //use spread operator to push new object into the array and add in firebase id in order info
-                ...response.data[key],
-                id: key
-              });
-          }
-          this.setState({ loading: false, orders: fetchedOrders });
-        })
-        .catch(error => {
-          this.setState({ loading: false, error: true });
-        })    
+    this.props.onFetchOrders();
   }
 
   render() {
     // if error state is true dislpay custom error page else have the orders rendered
-    return (
-      <div>
-        {this.state.orders.map(order => {
-          console.log(order);  
+    let orders = <Spinner />;
+    if (!this.props.isLoading) {   
+      orders = this.props.orders.map(order => {
+          //console.log(order);  
           return <Order 
                     key={order.id}
                     price={+order.price} //adding '+' before order.price to make toFixed() work
                     ingredients={order.ingredients}
                   />
-        })}
+        })
+    }
+    return (
+      <div>
+        {orders}
       </div>
     );
   }
 }
+const mapStateToProps = state => {
+  return {
+    orders: state.order.orders, //referring to order reducer
+    isLoading: state.order.isLoading // i wrote isLoading in order.js.
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onFetchOrders: () => dispatch(actions.fetchOrders())
+  };
+}
+
+// remember to connect mapStateToProps... thats why its screaming at me that its not a function AND IMPORT CONNECT!
 // wrap export default with an error handler! also reminder to pass in axios as an arguement!
-export default withErrorHandler(Orders, axios);
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Orders, axios));
+// hey remember its connect(matchStateToProps, matchDispatchToProps)....

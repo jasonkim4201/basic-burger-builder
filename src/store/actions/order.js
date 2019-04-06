@@ -39,3 +39,52 @@ export const purchaseBurger = (orderData) => {
   };
 
 }
+
+export const purchaseInit = () => {
+  return {
+    type: actionTypes.PURCAHSE_INIT
+  };
+}
+
+export const fetchOrdersStart = () => {
+  return {
+    type: actionTypes.FETCH_ORDERS_START
+  };
+}
+
+export const fetchOrdersSuccess = (orders) => {
+  return {
+    type: actionTypes.FETCH_ORDERS_SUCCESS,
+    orders: orders
+  };
+}
+
+export const fetchOrdersFailed = (error) => {
+  return {
+    type: actionTypes.FETCH_ORDERS_FAILED,
+    error: error
+  };
+}
+
+export const fetchOrders = () => {
+  return dispatch => {
+    dispatch(fetchOrdersStart());
+    axios.get("/orders.json")
+        .then(response => {
+          console.log(response);
+          // use for in loop to turn the response.data object into an array
+          const fetchedOrders = [];
+          for (let key in response.data) {
+              console.log(key); // unique id from firebase
+              fetchedOrders.push({ //use spread operator to push new object into the array and add in firebase id in order info
+                ...response.data[key],
+                id: key
+              });
+          }
+          dispatch(fetchOrdersSuccess(fetchedOrders))
+        })
+        .catch(error => {
+          dispatch(fetchOrdersFailed(error));
+        })    
+  }
+}
