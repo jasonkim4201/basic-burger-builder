@@ -6,6 +6,7 @@ const NavigationItems = (props) => (
   <ul className={classes.NavigationItems}>
     <NavigationItem link="/" exact> Burger Builder </NavigationItem> {/* since active is a boolean value no need to add a value */}
     <NavigationItem link="/orders"> Orders </NavigationItem>
+    <NavigationItem link="/sign-in">Sign in</NavigationItem>
   </ul>
 );
 
