@@ -5,6 +5,7 @@ import axios from "../../axios-orders";
 import withErrorHandler from "../../hoc/withErrorHandler/withErrorHandler";
 import * as actions from "../../store/actions/";
 import Spinner from "../../components/UI/Spinner/Spinner";
+import CustomError from "../../components/CustomError/CustomError";
 
 
 class Orders extends Component {
@@ -16,6 +17,7 @@ class Orders extends Component {
   render() {
     // if error state is true dislpay custom error page else have the orders rendered
     let orders = <Spinner />;
+   
     if (!this.props.isLoading) {   
       orders = this.props.orders.map(order => {
           //console.log(order);  
@@ -24,25 +26,28 @@ class Orders extends Component {
                     price={+order.price} //adding '+' before order.price to make toFixed() work
                     ingredients={order.ingredients}
                   />
-        })
+        })  
     }
+    
     return (
       <div>
-        {orders}
+        {this.props.error ? <CustomError message="Looks like we're experiencing some issues. Come back later!"/> : orders}
       </div>
     );
   }
 }
+
 const mapStateToProps = state => {
   return {
     orders: state.order.orders, //referring to order reducer
-    isLoading: state.order.isLoading // i wrote isLoading in order.js.
+    isLoading: state.order.isLoading, // i wrote isLoading in order.js.
+    error: state.order.error
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchOrders: () => dispatch(actions.fetchOrders())
+    onFetchOrders: () => dispatch(actions.fetchOrders()),
   };
 }
 

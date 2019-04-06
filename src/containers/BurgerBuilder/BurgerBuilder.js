@@ -63,12 +63,8 @@ class BurgerBuilder extends Component {
     }
     
     let orderSummary = null;
-
-     let errorMessage = (
-      <CustomError />
-    );
-    
-    let burger = this.props.error ? errorMessage : <Spinner />; 
+    /* let errorMessage = <CustomError />; */
+    let burger = this.props.error ? <CustomError /> : <Spinner />; 
     
     if (this.props.ings) {
       burger = (
