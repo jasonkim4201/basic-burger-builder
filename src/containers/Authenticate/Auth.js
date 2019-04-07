@@ -2,6 +2,8 @@ import React, {Component} from "react";
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import classes from "./Auth.module.css";
+import * as actions from "../../store/actions/";
+import { connect } from "react-redux";
 
 class Auth extends Component {
   // manage state through here instead of redux
@@ -35,7 +37,8 @@ class Auth extends Component {
         valid: false,
         touched: false
       },
-    }
+    },
+    isSignUp: true
   }
 
   // checking the validity of the form inputs
@@ -76,6 +79,19 @@ class Auth extends Component {
     this.setState({controls: updatedControls});
   }
 
+  handleFormSubmit = (event) => {
+    event.preventDefault();
+    // onAuth needs the email and password
+
+    this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignUp);
+  }
+
+  switchAuthModeHandler = () => {
+    this.setState(prevState => {
+      return {isSignUp: !prevState.isSignUp};
+    })
+  }
+
   render() {
     // similar process to contact data container
     const formElementsArray = [];
@@ -99,13 +115,22 @@ class Auth extends Component {
 
     return (
       <div className={classes.Auth}>
-        <form>
+        <form onSubmit={this.handleFormSubmit}>
           {form}
           <Button btnType="Success">SUBMIT</Button>
         </form>
-      </div>
+        <Button 
+          clicked={this.switchAuthModeHandler}
+          btnType="Danger">SWITCH TO {this.state.isSignUp ? "SIGN IN" : "REGISTER"}</Button>
+      </div> 
     )
   }
 }
 
-export default Auth;
+const mapDispatchToProps = dispatch => {
+  return {
+    onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
+  }
+}
+
+export default connect(null, mapDispatchToProps)(Auth);
