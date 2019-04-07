@@ -1,9 +1,12 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
+import Spinner from "../../components/UI/Spinner/Spinner";
 import classes from "./Auth.module.css";
 import * as actions from "../../store/actions/";
 import { connect } from "react-redux";
+
+
 
 class Auth extends Component {
   // manage state through here instead of redux
@@ -12,8 +15,8 @@ class Auth extends Component {
       email: {
         elementType: "input",
         elementConfig: {
-            type: "email",
-            placeholder: "Email"
+          type: "email",
+          placeholder: "Email"
         },
         value: "",
         validation: {
@@ -26,8 +29,8 @@ class Auth extends Component {
       password: {
         elementType: "input",
         elementConfig: {
-            type: "password",
-            placeholder: "Password"
+          type: "password",
+          placeholder: "Password"
         },
         value: "",
         validation: {
@@ -48,7 +51,7 @@ class Auth extends Component {
     // write validation rules here which will determine if isValid will return true. 
 
     if (rules.required) { // && isValid added to ensure that all checks must result in true before isValid returns true
-        isValid = value.trim() !== "" && isValid;
+      isValid = value.trim() !== "" && isValid;
     }
     if (rules.minLength) {
       isValid = value.length >= rules.minLength && isValid;
@@ -76,7 +79,7 @@ class Auth extends Component {
       }
     };
 
-    this.setState({controls: updatedControls});
+    this.setState({ controls: updatedControls });
   }
 
   handleFormSubmit = (event) => {
@@ -88,7 +91,7 @@ class Auth extends Component {
 
   switchAuthModeHandler = () => {
     this.setState(prevState => {
-      return {isSignUp: !prevState.isSignUp};
+      return { isSignUp: !prevState.isSignUp };
     })
   }
 
@@ -96,13 +99,13 @@ class Auth extends Component {
     // similar process to contact data container
     const formElementsArray = [];
     for (let key in this.state.controls) { //key is name, address, etc...
-        formElementsArray.push({
-          id: key,
-          config: this.state.controls[key]
-        })
+      formElementsArray.push({
+        id: key,
+        config: this.state.controls[key]
+      })
     }
-    const form = formElementsArray.map(formElement => (
-      <Input 
+    let form = formElementsArray.map(formElement => (
+      <Input
         key={formElement.id}
         elementType={formElement.config.elementType}
         elementConfig={formElement.config.elementConfig}
@@ -110,22 +113,60 @@ class Auth extends Component {
         invalid={!formElement.config.valid}
         shouldValidate={formElement.config.validation}
         touched={formElement.config.touched}
-        changed={(event) => this.inputChangedHandler(event, formElement.id)}/>
+        changed={(event) => this.inputChangedHandler(event, formElement.id)} />
     ));
 
+    if (this.props.isLoading) {
+      form = <Spinner />
+    }
+
+    let errorMessage = null;
+
+    if (this.props.error) {
+      console.log(this.props.error.message)
+      switch (this.props.error.message) {
+        case "INVALID_EMAIL": errorMessage = <p>Please use a valid email.</p>
+          break;
+        case "EMAIL_EXISTS": errorMessage = <p>Email already exists.</p>
+          break;
+        case "MISSING_PASSWORD": errorMessage = <p>Please include a password.</p>
+          break;
+        case "WEAK_PASSWORD : Password should be at least 6 characters": errorMessage = <p>Password should be at least 6 characters.</p>
+          break;        
+        case "USER_DISABLED": errorMessage = <p>Your account has been suspensed. Please contact the administrator</p>
+          break;
+        default: alert(this.props.error.message);
+          break;
+      }
+
+    }
+
+    const style = {
+      fontWeight: "bold",
+      color: "red"
+    }
     return (
       <div className={classes.Auth}>
+        <h2>{this.state.isSignUp ? "Register account" : "Sign in"}</h2>
+        <div style={style}>{errorMessage}</div>
         <form onSubmit={this.handleFormSubmit}>
           {form}
-          <Button btnType="Success">SUBMIT</Button>
+          <Button btnType="Success">ENTER</Button>
         </form>
-        <Button 
+        <Button
           clicked={this.switchAuthModeHandler}
           btnType="Danger">SWITCH TO {this.state.isSignUp ? "SIGN IN" : "REGISTER"}</Button>
-      </div> 
+      </div>
     )
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    isLoading: state.auth.loading, //becase rootReducer which leads to auth in reducers folder
+    error: state.auth.error
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -133,4 +174,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(Auth);
+export default connect(mapStateToProps, mapDispatchToProps)(Auth);

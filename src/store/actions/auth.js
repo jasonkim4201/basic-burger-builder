@@ -26,9 +26,7 @@ export const authFailed = (error) => {
 // make action type that will hold async code that takes the email and pass as args
 export const auth = (email, password, isSignUp) => {
   return dispatch => {
-    dispatch(authStart()); //start authorization process
-    /* https://www.googleapis.com/identitytoolkit/v3/relyingparty/signupNewUser?key= */ //email link in case i got wrong one lol
-    /* https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyCustomToken?key= */ //lets see which one works
+    dispatch(authStart()); 
     const authData = {
       email: email,
       password: password,
@@ -42,13 +40,14 @@ export const auth = (email, password, isSignUp) => {
     axios.post(url, authData)
         .then(response => {
           // successful auths here
+          console.log(url);
           console.log(response);
           dispatch(authSuccess(response.data.idToken, response.data.localId))
         })
         .catch(error => {
           // failures => this way
           console.log(error);
-          dispatch(authFailed(error));
+          dispatch(authFailed(error.response.data.error));
         });
   };
 };
