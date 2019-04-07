@@ -47,10 +47,10 @@ const setIngredients = (state, action) => {
       lettuce: action.ingredients.lettuce,
       cheese: action.ingredients.cheese,
       meat: action.ingredients.meat, //this reduces flexibility but will get the lettuce to go on an area i want
-      isBuilding: false
     },
     error: false,
-    totalPrice: 5
+    totalPrice: 5,
+    isBuilding: false
   });
 }
 
