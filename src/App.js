@@ -6,6 +6,7 @@ import { Route, Switch } from "react-router-dom";
 import CustomError from './components/CustomError/CustomError';
 import Orders from './containers/Orders/Orders';
 import Auth from './containers/Authenticate/Auth';
+import Logout from './containers/Authenticate/Logout/Logout';
 
 
 class App extends Component {
@@ -17,6 +18,7 @@ class App extends Component {
           <Route path="/checkout" component={Checkout} /> {/* make sure to match path from navigation items */}
           <Route path="/orders" component={Orders} />
           <Route path="/sign-in" component={Auth} />
+          <Route path="/logout" component={Logout} />
           <Route exact path="/" component={BurgerBuilder}/>
           <Route render ={() => <CustomError message="Page not found!" />} />
          </Switch>

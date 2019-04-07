@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 import Input from "../../components/UI/Input/Input";
 import Button from "../../components/UI/Button/Button";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import classes from "./Auth.module.css";
 import * as actions from "../../store/actions/";
-import { connect } from "react-redux";
+
 
 
 
@@ -145,13 +147,24 @@ class Auth extends Component {
       fontWeight: "bold",
       color: "red"
     }
+
+    const formEnterBtn = this.state.isSignUp 
+                        ? <Button btnType="Success">REGISTER</Button>
+                        : <Button btnType="Success">CONTINUE</Button>;
+    // after clicking on continue have it redirect to main page. need to bring in props for authentication too
+    let authRedirect = null; 
+    if (this.props.isAuthenticated) {
+      authRedirect = <Redirect to="/" />;
+    }
+    
     return (
       <div className={classes.Auth}>
         <h2>{this.state.isSignUp ? "Register account" : "Sign in"}</h2>
+        {authRedirect}
         <div style={style}>{errorMessage}</div>
         <form onSubmit={this.handleFormSubmit}>
           {form}
-          <Button btnType="Success">ENTER</Button>
+          {formEnterBtn}
         </form>
         <Button
           clicked={this.switchAuthModeHandler}
@@ -164,7 +177,8 @@ class Auth extends Component {
 const mapStateToProps = state => {
   return {
     isLoading: state.auth.loading, //becase rootReducer which leads to auth in reducers folder
-    error: state.auth.error
+    error: state.auth.error,
+    isAuthenticated: state.auth.token !== null
   };
 };
 
