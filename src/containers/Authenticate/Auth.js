@@ -8,8 +8,6 @@ import classes from "./Auth.module.css";
 import * as actions from "../../store/actions/";
 
 
-
-
 class Auth extends Component {
   // manage state through here instead of redux
   state = {
@@ -44,6 +42,12 @@ class Auth extends Component {
       },
     },
     isSignUp: true
+  }
+
+  componentDidMount() {
+    if (!this.props.isBuilding && this.props.authRedirectPath !== "/") {
+      this.props.onSetAuthRedirectPath();
+    }
   }
 
   // checking the validity of the form inputs
@@ -154,7 +158,7 @@ class Auth extends Component {
     // after clicking on continue have it redirect to main page. need to bring in props for authentication too
     let authRedirect = null; 
     if (this.props.isAuthenticated) {
-      authRedirect = <Redirect to="/" />;
+      authRedirect = <Redirect to={this.props.authRedirectPath} />;
     }
     
     return (
@@ -178,13 +182,16 @@ const mapStateToProps = state => {
   return {
     isLoading: state.auth.loading, //becase rootReducer which leads to auth in reducers folder
     error: state.auth.error,
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
+    isBuilding: state.burgerBuilder.isBuilding,
+    authRedirectPath: state.auth.authRedirectPath
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
+    onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath("/"))
   }
 }
 
