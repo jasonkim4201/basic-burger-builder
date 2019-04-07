@@ -30,11 +30,17 @@ const withErrorHandler = (WrappedComponent, axios) => {
     }
 
     render() {
+      const style = {
+        textAlign: "center"
+      }
       return (
         /* firebase will have a message property for errors */
         <Auxiliary>
           <Modal show={this.state.error} modalClosed={this.errorConfirmedHandler}>
+            <div style={style}>
+            <div><strong>Oh no! Something went wrong!</strong></div>
             {this.state.error && this.state.error.message}
+            </div>
           </Modal>
           <WrappedComponent {...this.props} />
         </Auxiliary>

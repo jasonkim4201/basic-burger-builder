@@ -1,4 +1,4 @@
-// going to make my redecuers leaner and more readable
+// going to make my reducers leaner and more readable
 export const updateObject = (oldObject, updatedProps) => {
   return {
     ...oldObject,

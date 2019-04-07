@@ -23,6 +23,20 @@ export const authFailed = (error) => {
   };  
 };
 
+export const logout = () => {
+  return {
+    type: actionTypes.AUTH_LOGOUT
+  };
+}
+
+export const checkAuthTimeout = (expirationTime) => {
+  return dispatch => {
+      setTimeout(() => {
+        dispatch(logout());    
+      }, expirationTime * 1000);
+  };
+};
+
 // make action type that will hold async code that takes the email and pass as args
 export const auth = (email, password, isSignUp) => {
   return dispatch => {
@@ -40,9 +54,9 @@ export const auth = (email, password, isSignUp) => {
     axios.post(url, authData)
         .then(response => {
           // successful auths here
-          console.log(url);
           console.log(response);
-          dispatch(authSuccess(response.data.idToken, response.data.localId))
+          dispatch(authSuccess(response.data.idToken, response.data.localId));
+          dispatch(checkAuthTimeout(response.data.expiresIn));
         })
         .catch(error => {
           // failures => this way
