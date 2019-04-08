@@ -57,7 +57,7 @@ export const auth = (email, password, isSignUp) => {
     axios.post(url, authData)
         .then(response => {
           // successful auths here
-          console.log(response); 
+          // console.log(response); 
           // this is now i get the info when session will expire
           const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000); // its in millisecs so * 1000
           // accessing local storage
@@ -70,7 +70,7 @@ export const auth = (email, password, isSignUp) => {
         })
         .catch(error => {
           // failures => this way
-          console.log(error);
+          // console.log(error);
           dispatch(authFailed(error.response.data.error));
         });
   };

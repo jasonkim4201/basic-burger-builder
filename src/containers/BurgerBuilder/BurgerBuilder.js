@@ -18,7 +18,7 @@ class BurgerBuilder extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props); //shows history location and match. this props from routes only get passed to direct child.
+    // console.log(this.props); //shows history location and match. this props from routes only get passed to direct child.
                             // see burger.js file for workaround to pass into nested components
     this.props.onInitIngredients();
   }

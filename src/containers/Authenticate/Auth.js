@@ -6,7 +6,7 @@ import Button from "../../components/UI/Button/Button";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import classes from "./Auth.module.css";
 import * as actions from "../../store/actions/";
-
+import { updateObject, checkValidity } from "../../shared/utility";
 
 class Auth extends Component {
   // manage state through here instead of redux
@@ -50,41 +50,14 @@ class Auth extends Component {
     }
   }
 
-  // checking the validity of the form inputs
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    // write validation rules here which will determine if isValid will return true. 
-
-    if (rules.required) { // && isValid added to ensure that all checks must result in true before isValid returns true
-      isValid = value.trim() !== "" && isValid;
-    }
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.isNum) {
-      const stupidRegexCheck = /^\d+$/; // this is the way to check is stuff is a number
-      isValid = stupidRegexCheck.test(value.trim()) && isValid;
-    }
-    if (rules.isEmail) {
-      const stupidEmailRegexCheck = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/; // the really long string that checks for email validation. i really need to save these somewhere
-      isValid = stupidEmailRegexCheck.test(value.trim()) && isValid;
-    }
-    return isValid;
-
-  }
-
   inputChangedHandler = (event, controlName) => {
-    const updatedControls = {
-      ...this.state.controls,
-      [controlName]: {
-        ...this.state.controls[controlName],
+    const updatedControls = updateObject(this.state.controls, {
+      [controlName]: updateObject(this.state.controls[controlName], {
         value: event.target.value,
-        valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+        valid: checkValidity(event.target.value, this.state.controls[controlName].validation),
         touched: true
-      }
-    };
-
+      })
+    });
     this.setState({ controls: updatedControls });
   }
 
@@ -129,7 +102,7 @@ class Auth extends Component {
     let errorMessage = null;
 
     if (this.props.error) {
-       console.log(this.props.error.message)
+       // console.log(this.props.error.message)
       switch (this.props.error.message) {
         case "INVALID_EMAIL": errorMessage = <p>Please use a valid email.</p>
           break;
