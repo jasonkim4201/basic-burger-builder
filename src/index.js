@@ -30,7 +30,7 @@ const store = createStore(rootReducer, composeEnhancers(
 // provider should wrap around everything. yes, even the browser router. remember that...
 const app = (
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter basename="/basic-burger-builder/">
       <App />
     </BrowserRouter>
   </Provider>
