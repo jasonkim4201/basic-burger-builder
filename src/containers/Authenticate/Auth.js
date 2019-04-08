@@ -129,19 +129,23 @@ class Auth extends Component {
     let errorMessage = null;
 
     if (this.props.error) {
-      console.log(this.props.error.message)
+       console.log(this.props.error.message)
       switch (this.props.error.message) {
         case "INVALID_EMAIL": errorMessage = <p>Please use a valid email.</p>
           break;
         case "EMAIL_EXISTS": errorMessage = <p>Email already exists.</p>
           break;
+        case "EMAIL_NOT_FOUND": errorMessage = <p>Email does not exist. Please try another email or register an account.</p>
+          break;
         case "MISSING_PASSWORD": errorMessage = <p>Please include a password.</p>
           break;
         case "WEAK_PASSWORD : Password should be at least 6 characters": errorMessage = <p>Password should be at least 6 characters.</p>
+          break;
+        case "INVALID_PASSWORD": errorMessage = <p>Incorrect password. Please try again.</p>
           break;        
         case "USER_DISABLED": errorMessage = <p>Your account has been suspensed. Please contact the administrator</p>
           break;
-        default: alert(this.props.error.message);
+        default: errorMessage = <p>{this.props.error.message}</p>
           break;
       }
 
