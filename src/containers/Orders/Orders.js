@@ -11,7 +11,7 @@ import CustomError from "../../components/CustomError/CustomError";
 class Orders extends Component {
   // get token from redux auth reducer file. aka pull it from mapStateToProps
   componentDidMount() {
-    this.props.onFetchOrders(this.props.token);
+    this.props.onFetchOrders(this.props.token, this.props.userId);
   }
 
   render() {
@@ -42,13 +42,14 @@ const mapStateToProps = state => {
     orders: state.order.orders, 
     isLoading: state.order.isLoading, 
     error: state.order.error,
-    token: state.auth.token
+    token: state.auth.token,
+    userId: state.auth.userId
   } //redux dev tools is so useful here
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onFetchOrders: (token) => dispatch(actions.fetchOrders(token)),
+    onFetchOrders: (token, userId) => dispatch(actions.fetchOrders(token, userId)),
   };
 }
 
