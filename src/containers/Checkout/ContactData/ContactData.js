@@ -7,6 +7,7 @@ import axios from "../../../axios-orders";
 import Spinner from "../../../components/UI/Spinner/Spinner";
 import Input from "../../../components/UI/Input/Input";
 import * as actions from "../../../store/actions/";
+import { updateObject, checkValidity } from "../../../shared/utility";
 
 class ContactData extends Component {
   state = {
@@ -115,48 +116,17 @@ class ContactData extends Component {
     this.props.onOrderBurger(orderInfo, this.props.token);
   }
 
-  // checking the validity of the form inputs
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    // write validation rules here which will determine if isValid will return true. 
-
-    if (rules.required) { // && isValid added to ensure that all checks must result in true before isValid returns true
-        isValid = value.trim() !== "" && isValid;
-    }
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.maxLength) {
-      isValid = value.length <= rules.maxLength && isValid;
-    }
-    if (rules.isNum) {
-      const stupidRegexCheck = /^\d+$/; // this is the way to check is stuff is a number
-      isValid = stupidRegexCheck.test(value.trim()) && isValid;
-    }
-    if (rules.isEmail) {
-      const stupidEmailRegexCheck = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/; // the really long string that checks for email validation. i really need to save these somewhere
-      isValid = stupidEmailRegexCheck.test(value.trim()) && isValid;
-    }
-    return isValid;
-
-  }
-
   inputChangedHandler = (event, inputIdentifier) => {
     //console.log(event.target.value);
-    const updatedOrderForm = {
-      // use spread operator to copy orderForm from state
-      ...this.state.orderForm
-    }
-    const updatedFormElement = {
-      ...updatedOrderForm[inputIdentifier]
-    };
-    updatedFormElement.value = event.target.value;
-    updatedFormElement.valid = this.checkValidity(updatedFormElement.value, updatedFormElement.validation);
-    updatedFormElement.touched = true;
-    updatedOrderForm[inputIdentifier] = updatedFormElement;
-    //console.log(updatedFormElement);
-
+    const updatedFormElement = updateObject(this.state.orderForm[inputIdentifier], {
+      value: event.target.value,
+      valid: checkValidity(event.target.value, this.state.orderForm[inputIdentifier].validation),
+      touched: true
+    }); 
+    const updatedOrderForm = updateObject(this.state.orderForm, {
+      [inputIdentifier]: updatedFormElement
+    })
+  
     let formIsValid = true;
     // make a for in loop to go through all elements and check all inputs for validity
     for (let inputIdentifier in updatedOrderForm) {
