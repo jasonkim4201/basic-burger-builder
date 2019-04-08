@@ -20,6 +20,14 @@ Once you purchase your burger just fill out a form with some basic information a
 There are some extra features where I did my best to focus on creating a secure environment for this app. I've even added a few custom error messages and features to show that I'm serious!
 <img src="src/assets/images/unauth.png" alt="unauthorized">
 
+## TODOS:
 
+### Javascript
+* Recreate this all with React hooks instead of using class based components.
+* Add more information in orders such as delivery type picked
+* Include more burger ingredients and the logic that follows with it all
 
-
+### CSS
+* See if I can add more custom css
+* Make new burger ingredients with css
+* Look into SASS
