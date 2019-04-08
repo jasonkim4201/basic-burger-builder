@@ -1,6 +1,8 @@
 # Basic Burger Builder
 Build a burger with react
 
+[Click here to build a burger!](https://jasonkim4201.github.io/basic-burger-builder/)
+
 This a (not so basic) build a burger app made by React.js with the help of Redux. This uses firebase to place all your delicious pixilated orders of burgers. 
 
 ## Features
