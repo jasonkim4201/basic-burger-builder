@@ -6,9 +6,7 @@ import Button from "../../components/UI/Button/Button";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import classes from "./Auth.module.css";
 import * as actions from "../../store/actions/";
-
-
-
+import { updateObject, checkValidity } from "../../shared/utility";
 
 class Auth extends Component {
   // manage state through here instead of redux
@@ -46,41 +44,20 @@ class Auth extends Component {
     isSignUp: true
   }
 
-  // checking the validity of the form inputs
-  checkValidity(value, rules) {
-    let isValid = true;
-
-    // write validation rules here which will determine if isValid will return true. 
-
-    if (rules.required) { // && isValid added to ensure that all checks must result in true before isValid returns true
-      isValid = value.trim() !== "" && isValid;
+  componentDidMount() {
+    if (!this.props.isBuilding && this.props.authRedirectPath !== "/") {
+      this.props.onSetAuthRedirectPath();
     }
-    if (rules.minLength) {
-      isValid = value.length >= rules.minLength && isValid;
-    }
-    if (rules.isNum) {
-      const stupidRegexCheck = /^\d+$/; // this is the way to check is stuff is a number
-      isValid = stupidRegexCheck.test(value.trim()) && isValid;
-    }
-    if (rules.isEmail) {
-      const stupidEmailRegexCheck = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/; // the really long string that checks for email validation. i really need to save these somewhere
-      isValid = stupidEmailRegexCheck.test(value.trim()) && isValid;
-    }
-    return isValid;
-
   }
 
   inputChangedHandler = (event, controlName) => {
-    const updatedControls = {
-      ...this.state.controls,
-      [controlName]: {
-        ...this.state.controls[controlName],
+    const updatedControls = updateObject(this.state.controls, {
+      [controlName]: updateObject(this.state.controls[controlName], {
         value: event.target.value,
-        valid: this.checkValidity(event.target.value, this.state.controls[controlName].validation),
+        valid: checkValidity(event.target.value, this.state.controls[controlName].validation),
         touched: true
-      }
-    };
-
+      })
+    });
     this.setState({ controls: updatedControls });
   }
 
@@ -125,19 +102,23 @@ class Auth extends Component {
     let errorMessage = null;
 
     if (this.props.error) {
-      console.log(this.props.error.message)
+       // console.log(this.props.error.message)
       switch (this.props.error.message) {
         case "INVALID_EMAIL": errorMessage = <p>Please use a valid email.</p>
           break;
         case "EMAIL_EXISTS": errorMessage = <p>Email already exists.</p>
           break;
+        case "EMAIL_NOT_FOUND": errorMessage = <p>Email does not exist. Please try another email or register an account.</p>
+          break;
         case "MISSING_PASSWORD": errorMessage = <p>Please include a password.</p>
           break;
         case "WEAK_PASSWORD : Password should be at least 6 characters": errorMessage = <p>Password should be at least 6 characters.</p>
+          break;
+        case "INVALID_PASSWORD": errorMessage = <p>Incorrect password. Please try again.</p>
           break;        
         case "USER_DISABLED": errorMessage = <p>Your account has been suspensed. Please contact the administrator</p>
           break;
-        default: alert(this.props.error.message);
+        default: errorMessage = <p>{this.props.error.message}</p>
           break;
       }
 
@@ -154,7 +135,7 @@ class Auth extends Component {
     // after clicking on continue have it redirect to main page. need to bring in props for authentication too
     let authRedirect = null; 
     if (this.props.isAuthenticated) {
-      authRedirect = <Redirect to="/" />;
+      authRedirect = <Redirect to={this.props.authRedirectPath} />;
     }
     
     return (
@@ -178,13 +159,16 @@ const mapStateToProps = state => {
   return {
     isLoading: state.auth.loading, //becase rootReducer which leads to auth in reducers folder
     error: state.auth.error,
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
+    isBuilding: state.burgerBuilder.isBuilding,
+    authRedirectPath: state.auth.authRedirectPath
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp))
+    onAuth: (email, password, isSignUp) => dispatch(actions.auth(email, password, isSignUp)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath("/"))
   }
 }
 

@@ -1,12 +1,13 @@
 import * as actionTypes from "../actions/actionTypes";
-import { updateObject } from "../utility";
+import { updateObject } from "../../shared/utility";
 
 // set initial state constant to define state
 
 const initialState = {
   ingredients: null,
   totalPrice: 5,
-  error: false
+  error: false,
+  isBuilding: false
 };
 
 const INGREDIENT_PRICES = {
@@ -21,7 +22,8 @@ const addIngredient = (state, action) => {// .ingredientName comes form matchDis
   const updatedIngredients = updateObject(state.ingredients, updatedIngredient);
   const updatedState = {
     ingredients: updatedIngredients,
-    totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName]
+    totalPrice: state.totalPrice + INGREDIENT_PRICES[action.ingredientName],
+    isBuilding: true 
   }
   return updateObject(state, updatedState);
 };
@@ -31,7 +33,8 @@ const removeIngredient = (state, action) => {
   const updatedIngs = updateObject(state.ingredients, updatedIng);
   const updatedStateRemove = {
     ingredients: updatedIngs,
-    totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName]
+    totalPrice: state.totalPrice - INGREDIENT_PRICES[action.ingredientName],
+    isBuilding: true
   };
   return updateObject(state, updatedStateRemove);
 };
@@ -43,10 +46,11 @@ const setIngredients = (state, action) => {
       bacon: action.ingredients.bacon,
       lettuce: action.ingredients.lettuce,
       cheese: action.ingredients.cheese,
-      meat: action.ingredients.meat //this reduces flexibility but will get the lettuce to go on an area i want
+      meat: action.ingredients.meat, //this reduces flexibility but will get the lettuce to go on an area i want
     },
     error: false,
-    totalPrice: 5
+    totalPrice: 5,
+    isBuilding: false
   });
 }
 

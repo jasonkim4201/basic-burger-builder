@@ -12,7 +12,7 @@ import orderReducer from "./store/reducers/order";
 import authReducer from "./store/reducers/auth";
 
 // create store constant to createStore which will take in the reducer
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = process.env.NODE_ENV ==="development" ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ : null || compose;
 
 // make a constant to COMBINE by reducers into some super reducer!!!
 
@@ -30,7 +30,7 @@ const store = createStore(rootReducer, composeEnhancers(
 // provider should wrap around everything. yes, even the browser router. remember that...
 const app = (
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter basename="/basic-burger-builder/">
       <App />
     </BrowserRouter>
   </Provider>

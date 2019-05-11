@@ -18,7 +18,7 @@ class BurgerBuilder extends Component {
   }
 
   componentDidMount() {
-    console.log(this.props); //shows history location and match. this props from routes only get passed to direct child.
+    // console.log(this.props); //shows history location and match. this props from routes only get passed to direct child.
                             // see burger.js file for workaround to pass into nested components
     this.props.onInitIngredients();
   }
@@ -41,7 +41,12 @@ class BurgerBuilder extends Component {
   }
 
   purchaseHandler = () => {
-    (this.props.isAuthenticated) ? this.setState({ purchasing: true }) : this.props.history.push("/sign-in")  
+    if (this.props.isAuthenticated) {
+      this.setState({ purchasing: true })
+    } else {
+      this.props.onSetAuthRedirectPath("/checkout");
+      this.props.history.push("/sign-in")
+    }
   }
 
   purchasedCancelHandler = () => {
@@ -112,7 +117,7 @@ const mapStateToPops = state => {
     ings: state.burgerBuilder.ingredients,
     price: state.burgerBuilder.totalPrice,
     error: state.burgerBuilder.error,
-    isAuthenticated: state.auth.token !== null
+    isAuthenticated: state.auth.token !== null,
   }
 }
 
@@ -121,7 +126,8 @@ const maphDispatchToProps = dispatch => {
     onIngredientAdded: (ingName) => dispatch(actions.addIngredient(ingName)),
     onIngredientRemoved: (ingName) => dispatch(actions.removeIngredient(ingName)),
     onInitIngredients: () => dispatch(actions.initIngredients()),
-    onInitPutchase: () => dispatch(actions.purchaseInit())
+    onInitPutchase: () => dispatch(actions.purchaseInit()),
+    onSetAuthRedirectPath: (path) => dispatch(actions.setAuthRedirectPath(path))
   }
 }
 

@@ -37,8 +37,10 @@ const Order = (props) => {
 
   return (
     <div className={classes.Order}>
-      <p>Ingredients: {ingredientOutput}</p>
-      <p>Price: <strong>${props.price.toFixed(2)}</strong></p> {/* adding toFixed(2) just in case */}
+      <p>Ingredients:</p>
+      <p>{ingredientOutput}</p>
+      <p>Price:</p> {/* adding toFixed(2) just in case */}
+      <p><strong>${props.price.toFixed(2)}</strong></p>
       {/* can also use Number.parseFloat(props.price.toFixed(2)) */}
     </div>
   );

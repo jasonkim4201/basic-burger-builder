@@ -1,8 +1,65 @@
 .Order {
-  width: 80%;
+  width: 90%;
   border: 1px solid #eee;
   box-shadow:  2px 3px #ccc;
   padding: 10px;
   margin: 10px auto;
   box-sizing: border-box;
+}
+
+.Order p {
+  display: grid;
+  width: 50%;
+
+}
+
+@media (min-width: 500px) {
+  .Order {
+    width: 90%;
+    border: 1px solid #eee;
+    box-shadow:  2px 3px #ccc;
+    padding: 10px;
+    margin: 10px auto;
+    box-sizing: border-box;
+  }
+  
+  .Order p {
+    display: inherit;
+    width: 100%;
+
+  }
+}
+
+@media (min-width: 768px) {
+  .Order {
+    width: 80%;
+    border: 1px solid #eee;
+    box-shadow:  2px 3px #ccc;
+    padding: 10px;
+    margin: 10px auto;
+    box-sizing: border-box;
+  }
+  
+  .Order p {
+    display: inherit;
+    width: 100%;
+
+  }
+}
+
+@media (min-width: 1200px) {
+  .Order {
+    width: 67%;
+    border: 1px solid #eee;
+    box-shadow:  2px 3px #ccc;
+    padding: 10px;
+    margin: 10px auto;
+    box-sizing: border-box;
+  }
+  
+  .Order p {
+    display: inherit;
+    width: 100%;
+
+  }
 }
