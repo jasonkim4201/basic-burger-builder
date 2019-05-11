@@ -26,9 +26,7 @@ There are some extra features where I did my best to focus on creating a secure 
 * Recreate this all with React hooks instead of using class based components.
 * Add more information in orders such as delivery type picked
 * Include more burger ingredients and the logic that follows with it all
+* Add testing
 
-### CSS
-* See if I can add more custom css
-* Make new burger ingredients with css
-* Look into SASS
+
 
